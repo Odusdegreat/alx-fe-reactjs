@@ -1,4 +1,4 @@
-import WelcomeMessage from "./WelcomeMessage";
+import WelcomeMessage from "./src/components/WelcomeMessage";
 
 function App() {
   return (
