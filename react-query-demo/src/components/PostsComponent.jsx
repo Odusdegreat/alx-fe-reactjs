@@ -37,6 +37,7 @@ const PostsComponent = () => {
   return (
     <div>
       <h1>Posts</h1>
+      <button onClick={fetchPosts}>Refresh</button>
       <ul>
         {data.map((post) => (
           <li key={post.id}>
