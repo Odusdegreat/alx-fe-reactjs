@@ -11,10 +11,17 @@ const fetchPosts = async () => {
 
 const PostsComponent = () => {
   // Using `fetchPosts` function
-  const { isLoading, isError, data, error } = useQuery({
-    queryKey: ["posts"], // Updated queryKey to "posts"
-    queryFn: fetchPosts, // Calling the extracted function
+  const { isLoading, isError, data, error, isStale } = useQuery({
+    queryKey: ["posts"],
+    queryFn: fetchPosts,
+    refetchInterval: 10000,
+    staleTime: 10000,
+    gcTime: 5000,
   });
+
+  if (isStale) {
+    console.log("Data is stale, refreshing");
+  }
 
   if (isLoading) {
     return <span>Loading...</span>;
