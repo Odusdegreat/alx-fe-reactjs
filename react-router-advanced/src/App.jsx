@@ -4,6 +4,7 @@ import ProfileDetails from "./components/ProfileDetails";
 import Profile from "./components/Profile";
 import ProfileSettings from "./components/ProfileSettings";
 import BlogPost from "./components/BlogPost";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
   return (
