@@ -1,16 +1,22 @@
 import { useQuery } from "@tanstack/react-query";
+
+// Extracting the fetch function
+const fetchPosts = async () => {
+  const response = await fetch("https://jsonplaceholder.typicode.com/posts");
+  if (!response.ok) {
+    throw new Error("Network response was not ok");
+  }
+  return response.json();
+};
+
 const PostsComponent = () => {
-  const { isPending, isError, data, error } = useQuery({
-    queryKey: ["todos"],
-    queryFn: async () => {
-      const response = await fetch(
-        "https://jsonplaceholder.typicode.com/posts"
-      );
-      return response.json();
-    },
+  // Using `fetchPosts` function
+  const { isLoading, isError, data, error } = useQuery({
+    queryKey: ["posts"], // Updated queryKey to "posts"
+    queryFn: fetchPosts, // Calling the extracted function
   });
 
-  if (isPending) {
+  if (isLoading) {
     return <span>Loading...</span>;
   }
 
