@@ -17,6 +17,9 @@ const PostsComponent = () => {
     refetchInterval: 10000,
     staleTime: 10000,
     gcTime: 5000,
+    cacheTime: 2000,
+    refetchOnWindowFocus: true,
+    keepPreviousData: true,
   });
 
   if (isStale) {
