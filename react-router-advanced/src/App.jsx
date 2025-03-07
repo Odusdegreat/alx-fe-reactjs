@@ -9,6 +9,10 @@ import ProtectedRoute from "./components/ProtectedRoute";
 function App() {
   return (
     <Router>
+      <ProfileDetails />
+      <ProfileSettings />
+      <Profile />
+      <BlogPost />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/profile/*" element={<Profile />} />
