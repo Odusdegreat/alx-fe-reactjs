@@ -1,15 +1,19 @@
 import { useState } from "react";
+import { v4 as uuidv4 } from "uuid"; // Importing uuid for unique ID generation
 
 const TodoList = () => {
   const [todos, setTodos] = useState([
-    { id: 1, text: "Learn React", completed: false },
-    { id: 2, text: "Write Tests", completed: false },
+    { id: uuidv4(), text: "Learn React", completed: false },
+    { id: uuidv4(), text: "Write Tests", completed: false },
   ]);
   const [input, setInput] = useState("");
 
   const addTodo = () => {
-    if (input.trim() === "") return;
-    setTodos([...todos, { id: Date.now(), text: input, completed: false }]);
+    if (input.trim() === "") {
+      alert("Please enter a valid todo."); // User feedback for invalid input
+      return;
+    }
+    setTodos([...todos, { id: uuidv4(), text: input, completed: false }]);
     setInput("");
   };
 
@@ -33,8 +37,12 @@ const TodoList = () => {
         value={input}
         onChange={(e) => setInput(e.target.value)}
         placeholder="Enter new todo"
+        aria-label="New todo input" // Accessibility improvement
       />
-      <button onClick={addTodo}>Add</button>
+      <button onClick={addTodo} aria-label="Add todo">
+        Add
+      </button>{" "}
+      {/* Accessibility improvement */}
       <ul>
         {todos.map((todo) => (
           <li
@@ -43,7 +51,13 @@ const TodoList = () => {
             style={{ textDecoration: todo.completed ? "line-through" : "none" }}
           >
             {todo.text}{" "}
-            <button onClick={() => deleteTodo(todo.id)}>Delete</button>
+            <button
+              onClick={() => deleteTodo(todo.id)}
+              aria-label="Delete todo"
+            >
+              Delete
+            </button>{" "}
+            {/* Accessibility improvement */}
           </li>
         ))}
       </ul>
