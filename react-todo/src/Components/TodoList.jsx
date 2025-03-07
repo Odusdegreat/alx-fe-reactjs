@@ -1,54 +1,57 @@
-import { useState } from "react";
+import { render, screen, fireEvent } from "@testing-library/react";
+import TodoList from "../Components/TodoList"; // ✅ Correct import path
 
-const TodoList = () => {
-  const [todos, setTodos] = useState([
-    { id: 1, text: "Learn React", completed: false },
-    { id: 2, text: "Write Tests", completed: false },
-  ]);
-  const [input, setInput] = useState("");
+// Test if the component renders correctly
+test("renders the todo list component", () => {
+  render(<TodoList />);
+  expect(screen.getByText("Todo List")).toBeInTheDocument();
+  expect(screen.getByPlaceholderText("Enter new todo")).toBeInTheDocument();
+});
 
-  const addTodo = () => {
-    if (input.trim() === "") return;
-    setTodos([...todos, { id: Date.now(), text: input, completed: false }]);
-    setInput("");
-  };
+// Test adding a new todo
+test("adds a new todo", () => {
+  render(<TodoList />);
 
-  const toggleTodo = (id) => {
-    setTodos(
-      todos.map((todo) =>
-        todo.id === id ? { ...todo, completed: !todo.completed } : todo
-      )
-    );
-  };
+  const input = screen.getByPlaceholderText("Enter new todo");
+  const addButton = screen.getByRole("button", { name: /add/i }); // ✅ More reliable selector
 
-  const deleteTodo = (id) => {
-    setTodos(todos.filter((todo) => todo.id !== id));
-  };
+  fireEvent.change(input, { target: { value: "New Todo" } });
+  fireEvent.click(addButton);
 
-  return (
-    <div>
-      <h1>Todo List</h1>
-      <input
-        type="text"
-        value={input}
-        onChange={(e) => setInput(e.target.value)}
-        placeholder="Enter new todo"
-      />
-      <button onClick={addTodo}>Add</button>
-      <ul>
-        {todos.map((todo) => (
-          <li
-            key={todo.id}
-            onClick={() => toggleTodo(todo.id)}
-            style={{ textDecoration: todo.completed ? "line-through" : "none" }}
-          >
-            {todo.text}{" "}
-            <button onClick={() => deleteTodo(todo.id)}>Delete</button>
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
-};
+  expect(screen.getByText("New Todo")).toBeInTheDocument();
+});
 
-export default TodoList;
+// Test toggling a todo
+test("toggles a todo as completed", () => {
+  render(<TodoList />);
+
+  // ✅ Add a todo first
+  const input = screen.getByPlaceholderText("Enter new todo");
+  const addButton = screen.getByRole("button", { name: /add/i });
+  fireEvent.change(input, { target: { value: "Test Todo" } });
+  fireEvent.click(addButton);
+
+  const todoItem = screen.getByText("Test Todo");
+
+  fireEvent.click(todoItem);
+  expect(todoItem).toHaveStyle("text-decoration: line-through");
+
+  fireEvent.click(todoItem);
+  expect(todoItem).not.toHaveStyle("text-decoration: line-through");
+});
+
+// Test deleting a todo
+test("deletes a todo", () => {
+  render(<TodoList />);
+
+  // ✅ Add a todo first
+  const input = screen.getByPlaceholderText("Enter new todo");
+  const addButton = screen.getByRole("button", { name: /add/i });
+  fireEvent.change(input, { target: { value: "Test Todo" } });
+  fireEvent.click(addButton);
+
+  const deleteButton = screen.getByRole("button", { name: /delete/i }); // ✅ More reliable selector
+  fireEvent.click(deleteButton);
+
+  expect(screen.queryByText("Test Todo")).not.toBeInTheDocument();
+});

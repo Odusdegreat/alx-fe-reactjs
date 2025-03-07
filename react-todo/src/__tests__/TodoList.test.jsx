@@ -1,5 +1,5 @@
 import { render, screen, fireEvent } from "@testing-library/react";
-import TodoList from "./TodoList.test";
+import TodoList from "../Components/TodoList"; // ✅ Correct import path
 
 // Test if the component renders correctly
 test("renders the todo list component", () => {
@@ -13,7 +13,7 @@ test("adds a new todo", () => {
   render(<TodoList />);
 
   const input = screen.getByPlaceholderText("Enter new todo");
-  const addButton = screen.getByText("Add");
+  const addButton = screen.getByRole("button", { name: /add/i }); // ✅ More reliable selector
 
   fireEvent.change(input, { target: { value: "New Todo" } });
   fireEvent.click(addButton);
@@ -24,7 +24,14 @@ test("adds a new todo", () => {
 // Test toggling a todo
 test("toggles a todo as completed", () => {
   render(<TodoList />);
-  const todoItem = screen.getByText("Learn React");
+
+  // ✅ Add a todo first
+  const input = screen.getByPlaceholderText("Enter new todo");
+  const addButton = screen.getByRole("button", { name: /add/i });
+  fireEvent.change(input, { target: { value: "Test Todo" } });
+  fireEvent.click(addButton);
+
+  const todoItem = screen.getByText("Test Todo");
 
   fireEvent.click(todoItem);
   expect(todoItem).toHaveStyle("text-decoration: line-through");
@@ -37,8 +44,14 @@ test("toggles a todo as completed", () => {
 test("deletes a todo", () => {
   render(<TodoList />);
 
-  const deleteButton = screen.getAllByText("Delete")[0]; // Get first delete button
+  // ✅ Add a todo first
+  const input = screen.getByPlaceholderText("Enter new todo");
+  const addButton = screen.getByRole("button", { name: /add/i });
+  fireEvent.change(input, { target: { value: "Test Todo" } });
+  fireEvent.click(addButton);
+
+  const deleteButton = screen.getByRole("button", { name: /delete/i }); // ✅ More reliable selector
   fireEvent.click(deleteButton);
 
-  expect(screen.queryByText("Learn React")).not.toBeInTheDocument();
+  expect(screen.queryByText("Test Todo")).not.toBeInTheDocument();
 });
