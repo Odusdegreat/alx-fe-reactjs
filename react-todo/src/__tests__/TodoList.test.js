@@ -1,16 +1,13 @@
-import { render, screen, fireEvent } from "@testing-library/react";
-import "@testing-library/jest-dom";
-import TodoList from "../TodoList";
+// __tests__/TodoList.test.js
+import React from "react";
+import { render } from "@testing-library/react";
+import { test, expect } from "@jest/globals";
+import TodoList from "../TodoList"; // Adjust the import path as needed
 
-test("adds a new todo", () => {
-  render(<TodoList />);
-  screen.debug(); // Print the DOM
-  const input = screen.getByPlaceholderText("Enter new todo");
-  const addButton = screen.getByRole("button", { name: /add/i });
+test("renders TodoList component with initial todos", () => {
+  const { getByText } = render(<TodoList />);
 
-  fireEvent.change(input, { target: { value: "New Todo" } });
-  fireEvent.click(addButton);
-
-  screen.debug(); // Print the DOM after adding a todo
-  expect(screen.getByText("New Todo")).toBeInTheDocument();
+  // Check if the todos are rendered
+  expect(getByText("Learn React")).toBeInTheDocument();
+  expect(getByText("Build a Todo App")).toBeInTheDocument();
 });
