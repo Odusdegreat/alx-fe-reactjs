@@ -3,14 +3,14 @@ import { useState } from "react";
 const AddRecipeForm = () => {
   const [title, setTitle] = useState("");
   const [ingredients, setIngredients] = useState("");
-  const [instructions, setInstructions] = useState("");
+  const [steps, setSteps] = useState(""); // Updated field for steps
   const [error, setError] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
     // Validation
-    if (!title || !ingredients || !instructions) {
+    if (!title || !ingredients || !steps) {
       setError("All fields are required.");
       return;
     }
@@ -21,11 +21,17 @@ const AddRecipeForm = () => {
       return;
     }
 
+    const stepList = steps.split("\n").map((step) => step.trim());
+    if (stepList.length < 1) {
+      setError("Please provide at least one step.");
+      return;
+    }
+
     const newRecipe = {
-      id: Date.now(), // Temporary unique ID
+      id: Date.now(),
       title,
       ingredients: ingredientList,
-      instructions: instructions.split("\n").map((step) => step.trim()),
+      steps: stepList, // Updated field for steps
     };
 
     console.log("New Recipe Submitted:", newRecipe);
@@ -34,7 +40,7 @@ const AddRecipeForm = () => {
     // Clear form fields
     setTitle("");
     setIngredients("");
-    setInstructions("");
+    setSteps("");
   };
 
   return (
@@ -72,7 +78,7 @@ const AddRecipeForm = () => {
           ></textarea>
         </div>
 
-        {/* Instructions */}
+        {/* Steps */}
         <div>
           <label className="block text-gray-700 font-medium">
             Preparation Steps:
@@ -80,8 +86,8 @@ const AddRecipeForm = () => {
           <textarea
             className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             rows="4"
-            value={instructions}
-            onChange={(e) => setInstructions(e.target.value)}
+            value={steps}
+            onChange={(e) => setSteps(e.target.value)}
             placeholder="Enter each step on a new line"
           ></textarea>
         </div>
