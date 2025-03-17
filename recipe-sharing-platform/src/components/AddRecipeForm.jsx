@@ -3,51 +3,68 @@ import { useState } from "react";
 const AddRecipeForm = () => {
   const [title, setTitle] = useState("");
   const [ingredients, setIngredients] = useState("");
-  const [steps, setSteps] = useState(""); // Updated field for steps
-  const [error, setError] = useState("");
+  const [steps, setSteps] = useState("");
+  const [errors, setErrors] = useState({}); // Track multiple validation errors
+
+  // Validation function
+  const validate = () => {
+    let validationErrors = {};
+
+    if (!title.trim()) validationErrors.title = "Title is required.";
+    if (!ingredients.trim())
+      validationErrors.ingredients = "Ingredients are required.";
+    if (!steps.trim()) validationErrors.steps = "Steps are required.";
+
+    const ingredientList = ingredients
+      .split("\n")
+      .map((item) => item.trim())
+      .filter(Boolean);
+    if (ingredientList.length < 2) {
+      validationErrors.ingredients = "Please provide at least two ingredients.";
+    }
+
+    const stepList = steps
+      .split("\n")
+      .map((step) => step.trim())
+      .filter(Boolean);
+    if (stepList.length < 1) {
+      validationErrors.steps = "Please provide at least one step.";
+    }
+
+    setErrors(validationErrors);
+    return Object.keys(validationErrors).length === 0;
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // Validation
-    if (!title || !ingredients || !steps) {
-      setError("All fields are required.");
-      return;
-    }
-
-    const ingredientList = ingredients.split("\n").map((item) => item.trim());
-    if (ingredientList.length < 2) {
-      setError("Please provide at least two ingredients.");
-      return;
-    }
-
-    const stepList = steps.split("\n").map((step) => step.trim());
-    if (stepList.length < 1) {
-      setError("Please provide at least one step.");
-      return;
-    }
+    if (!validate()) return; // Stop submission if validation fails
 
     const newRecipe = {
       id: Date.now(),
       title,
-      ingredients: ingredientList,
-      steps: stepList, // Updated field for steps
+      ingredients: ingredients
+        .split("\n")
+        .map((item) => item.trim())
+        .filter(Boolean),
+      steps: steps
+        .split("\n")
+        .map((step) => step.trim())
+        .filter(Boolean),
     };
 
     console.log("New Recipe Submitted:", newRecipe);
-    setError(""); // Clear errors
 
-    // Clear form fields
+    // Clear form fields and errors after successful submission
     setTitle("");
     setIngredients("");
     setSteps("");
+    setErrors({});
   };
 
   return (
     <div className="max-w-2xl mx-auto p-6 bg-white rounded-lg shadow-md mt-6">
       <h2 className="text-2xl font-bold mb-4 text-center">Add a New Recipe</h2>
-
-      {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
 
       <form onSubmit={handleSubmit} className="space-y-4">
         {/* Recipe Title */}
@@ -62,6 +79,9 @@ const AddRecipeForm = () => {
             onChange={(e) => setTitle(e.target.value)}
             placeholder="Enter recipe title"
           />
+          {errors.title && (
+            <p className="text-red-500 text-sm">{errors.title}</p>
+          )}
         </div>
 
         {/* Ingredients */}
@@ -76,6 +96,9 @@ const AddRecipeForm = () => {
             onChange={(e) => setIngredients(e.target.value)}
             placeholder="Enter each ingredient on a new line"
           ></textarea>
+          {errors.ingredients && (
+            <p className="text-red-500 text-sm">{errors.ingredients}</p>
+          )}
         </div>
 
         {/* Steps */}
@@ -90,6 +113,9 @@ const AddRecipeForm = () => {
             onChange={(e) => setSteps(e.target.value)}
             placeholder="Enter each step on a new line"
           ></textarea>
+          {errors.steps && (
+            <p className="text-red-500 text-sm">{errors.steps}</p>
+          )}
         </div>
 
         {/* Submit Button */}
