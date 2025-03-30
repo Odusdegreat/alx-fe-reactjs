@@ -22,7 +22,7 @@ const Search = () => {
       );
       setUserData(response.data);
     } catch (err) {
-      setError("Looks like we can't find the user");
+      setError("Looks like we cant find the user"); // Exact match
     } finally {
       setLoading(false);
     }
@@ -45,10 +45,9 @@ const Search = () => {
           Search
         </button>
       </form>
-
       {loading && <p className="text-center mt-4">Loading...</p>}
-      {error && <p className="text-center text-red-500 mt-4">{error}</p>}
-
+      {error && <p className="text-center text-red-500 mt-4">{error}</p>}{" "}
+      {/* Exact text used */}
       {userData && (
         <div className="mt-4 p-4 border rounded">
           <img
