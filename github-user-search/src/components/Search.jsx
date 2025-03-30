@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { fetchUsers } from "../services/githubService";
 
 const Search = () => {
@@ -7,72 +7,68 @@ const Search = () => {
   const [minRepos, setMinRepos] = useState("");
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [error, setError] = useState(false);
 
-  const handleSearch = async (e) => {
+  const fetchUserData = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setError("");
-    setUsers([]);
+    setError(false);
 
     const results = await fetchUsers(username, location, minRepos);
 
     if (results.length === 0) {
-      setError("Looks like we cant find the user");
-    } else {
-      setUsers(results);
+      setError(true);
     }
+
+    setUsers(results);
     setLoading(false);
   };
 
   return (
     <div className="p-6 max-w-xl mx-auto">
-      <form onSubmit={handleSearch} className="flex flex-col gap-4">
+      <form onSubmit={fetchUserData} className="mb-6 flex flex-col gap-4">
         <input
           type="text"
-          placeholder="GitHub Username..."
+          placeholder="GitHub Username"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
-          className="border p-2 rounded w-full"
+          className="p-2 border rounded"
         />
         <input
           type="text"
-          placeholder="Location (optional)..."
+          placeholder="Location (Optional)"
           value={location}
           onChange={(e) => setLocation(e.target.value)}
-          className="border p-2 rounded w-full"
+          className="p-2 border rounded"
         />
         <input
           type="number"
-          placeholder="Min Repositories (optional)..."
+          placeholder="Min Repos (Optional)"
           value={minRepos}
           onChange={(e) => setMinRepos(e.target.value)}
-          className="border p-2 rounded w-full"
+          className="p-2 border rounded"
         />
         <button
           type="submit"
-          className="bg-blue-500 text-white p-2 rounded w-full"
+          className="bg-blue-500 text-white p-2 rounded hover:bg-blue-600"
         >
           Search
         </button>
       </form>
 
-      {loading && <p className="text-center mt-4">Loading...</p>}
-      {error && <p className="text-center text-red-500 mt-4">{error}</p>}
+      {loading && <p>Loading...</p>}
+      {error && <p>Looks like we can't find the user</p>}
 
-      <div className="mt-6">
+      <div>
         {users.map((user) => (
-          <div
-            key={user.id}
-            className="flex items-center gap-4 border p-4 rounded shadow-md"
-          >
+          <div key={user.id} className="flex items-center gap-4 border-b py-2">
             <img
               src={user.avatar_url}
               alt={user.login}
-              className="w-16 h-16 rounded-full"
+              className="w-12 h-12 rounded-full"
             />
             <div>
-              <h2 className="text-lg font-bold">{user.login}</h2>
+              <p className="font-bold">{user.login}</p>
               <a
                 href={user.html_url}
                 target="_blank"
@@ -81,12 +77,6 @@ const Search = () => {
               >
                 View Profile
               </a>
-              {user.location && (
-                <p className="text-sm text-gray-500">📍 {user.location}</p>
-              )}
-              <p className="text-sm text-gray-500">
-                📂 {user.public_repos} Repositories
-              </p>
             </div>
           </div>
         ))}
