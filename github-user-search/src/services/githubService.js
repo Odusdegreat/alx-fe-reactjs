@@ -1,8 +1,8 @@
 import axios from "axios";
 
-const BASE_URL = "https://api.github.com/search/users?q";
+const BASE_URL = "https://api.github.com"; // Corrected base URL
 const TOKEN = import.meta.env.VITE_GITHUB_ACCESS_TOKEN; // Load token from environment variables
-const headers = { Authorization: `token ${TOKEN}` };
+const headers = TOKEN ? { Authorization: `token ${TOKEN}` } : {}; // Use token only if provided
 
 /**
  * Fetch a single GitHub user by username.
@@ -43,7 +43,7 @@ export const searchUsers = async (query, location = "", minRepos = 0) => {
       `${BASE_URL}/search/users?q=${searchQuery}`,
       { headers }
     );
-    return response.data.items; // Return list of users
+    return response.data.items || []; // Return list of users or empty array if none found
   } catch (error) {
     console.error("Error searching users:", error);
     return []; // Return empty array on error

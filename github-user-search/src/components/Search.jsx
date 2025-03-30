@@ -1,22 +1,23 @@
 import React, { useState } from "react";
-import { fetchUserData } from "../services/githubService"; // ✅ Import function
+import { fetchUserData } from "../services/githubService"; // ✅ Import API call
 
 const Search = () => {
-  const [query, setQuery] = useState(""); // User input state
-  const [users, setUsers] = useState([]); // User list state
+  const [query, setQuery] = useState(""); // Username search
+  const [location, setLocation] = useState(""); // Location search
+  const [users, setUsers] = useState([]); // Users list
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
 
   // Handles form submission
   const handleSubmit = async (e) => {
-    e.preventDefault(); // Prevent page reload
+    e.preventDefault();
     setLoading(true);
     setError(false);
 
     try {
-      const data = await fetchUserData(query);
+      const data = await fetchUserData(query, location); // ✅ Pass location
       if (data.items) {
-        setUsers(data.items); // ✅ Store user list
+        setUsers(data.items);
       } else {
         setError(true);
         setUsers([]);
@@ -32,7 +33,7 @@ const Search = () => {
   return (
     <div className="flex flex-col items-center mt-6">
       {/* Search Form */}
-      <form onSubmit={handleSubmit} className="mb-6 flex gap-4">
+      <form onSubmit={handleSubmit} className="mb-6 flex flex-col gap-4">
         <input
           type="text"
           placeholder="Enter GitHub username..."
@@ -40,6 +41,13 @@ const Search = () => {
           onChange={(e) => setQuery(e.target.value)}
           className="px-4 py-2 border rounded-md"
           required
+        />
+        <input
+          type="text"
+          placeholder="Enter location (optional)..."
+          value={location}
+          onChange={(e) => setLocation(e.target.value)}
+          className="px-4 py-2 border rounded-md"
         />
         <button
           type="submit"
@@ -68,6 +76,9 @@ const Search = () => {
               className="w-24 h-24 rounded-full"
             />
             <h2 className="text-lg font-semibold mt-2">{user.login}</h2>
+            {user.location && (
+              <p className="text-gray-500">📍 {user.location}</p>
+            )}
             <a
               href={user.html_url}
               target="_blank"
