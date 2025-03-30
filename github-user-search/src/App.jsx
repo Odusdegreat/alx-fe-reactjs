@@ -30,6 +30,8 @@ const App = () => {
       {loading && <p className="text-blue-500">Loading...</p>}
       {error && <p className="text-red-500">{error}</p>}
       {user && <UserCard user={user} />}
+      <h1 className="text-center text-2xl font-bold">GitHub User Search</h1>
+      <Search />
     </div>
   );
 };
