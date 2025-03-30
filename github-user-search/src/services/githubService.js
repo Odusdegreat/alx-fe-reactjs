@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const BASE_URL = "https://api.github.com";
+const BASE_URL = "https://api.github.com/search/users?q";
 const TOKEN = import.meta.env.VITE_GITHUB_ACCESS_TOKEN; // Load token from environment variables
 const headers = { Authorization: `token ${TOKEN}` };
 
