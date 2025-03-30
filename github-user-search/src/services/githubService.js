@@ -18,7 +18,7 @@ export const fetchUserData = async (username) => {
 };
 
 /**
- * Search for GitHub users using advanced filters (location, minRepos).
+ * Search for GitHub users using advanced filters.
  * @param {string} query - The search term (username or keyword).
  * @param {string} location - The user's location (optional).
  * @param {number} minRepos - Minimum number of repositories (optional).
