@@ -3,7 +3,7 @@ import { fetchUserData } from "../services/githubService"; // ✅ Import functio
 
 const Search = () => {
   const [query, setQuery] = useState(""); // User input state
-  const [user, setUser] = useState(null); // User data state
+  const [users, setUsers] = useState([]); // User list state
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
 
@@ -15,13 +15,15 @@ const Search = () => {
 
     try {
       const data = await fetchUserData(query);
-      if (data) {
-        setUser(data);
+      if (data.items) {
+        setUsers(data.items); // ✅ Store user list
       } else {
         setError(true);
+        setUsers([]);
       }
     } catch {
       setError(true);
+      setUsers([]);
     } finally {
       setLoading(false);
     }
@@ -51,27 +53,32 @@ const Search = () => {
       {loading && <p>Loading...</p>}
 
       {/* Display Error Message */}
-      {error && <p>❌ Looks like we can't find the user.</p>}
+      {error && <p>❌ Looks like we can't find any users.</p>}
 
-      {/* Display User Info if Found */}
-      {user && (
-        <div className="text-center mt-4">
-          <img
-            src={user.avatar_url}
-            alt="Avatar"
-            className="w-24 h-24 rounded-full mx-auto"
-          />
-          <h2 className="text-xl font-semibold mt-2">{user.login}</h2>
-          <a
-            href={user.html_url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-blue-500"
+      {/* Display Multiple Users */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
+        {users.map((user) => (
+          <div
+            key={user.id}
+            className="p-4 border rounded-md flex flex-col items-center"
           >
-            View Profile
-          </a>
-        </div>
-      )}
+            <img
+              src={user.avatar_url}
+              alt="Avatar"
+              className="w-24 h-24 rounded-full"
+            />
+            <h2 className="text-lg font-semibold mt-2">{user.login}</h2>
+            <a
+              href={user.html_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-blue-500"
+            >
+              View Profile
+            </a>
+          </div>
+        ))}
+      </div>
     </div>
   );
 };
