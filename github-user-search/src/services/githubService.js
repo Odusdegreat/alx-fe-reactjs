@@ -1,6 +1,8 @@
 import axios from "axios";
 
 const BASE_URL = "https://api.github.com";
+const TOKEN = import.meta.env.VITE_GITHUB_ACCESS_TOKEN; // Load token from environment variables
+const headers = { Authorization: `token ${TOKEN}` };
 
 /**
  * Fetch a single GitHub user by username.
@@ -9,7 +11,9 @@ const BASE_URL = "https://api.github.com";
  */
 export const fetchUserData = async (username) => {
   try {
-    const response = await axios.get(`${BASE_URL}/users/${username}`);
+    const response = await axios.get(`${BASE_URL}/users/${username}`, {
+      headers,
+    });
     return response.data;
   } catch (error) {
     console.error("Error fetching user data:", error);
@@ -36,7 +40,8 @@ export const searchUsers = async (query, location = "", minRepos = 0) => {
     }
 
     const response = await axios.get(
-      `${BASE_URL}/search/users?q=${searchQuery}`
+      `${BASE_URL}/search/users?q=${searchQuery}`,
+      { headers }
     );
     return response.data.items; // Return list of users
   } catch (error) {
