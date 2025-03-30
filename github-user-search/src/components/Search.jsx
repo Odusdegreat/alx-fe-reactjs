@@ -7,7 +7,9 @@ const Search = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const fetchUserData = async () => {
+  const fetchUserData = async (e) => {
+    e.preventDefault(); // Prevent page reload on form submission
+
     if (!username.trim()) return;
 
     setLoading(true);
@@ -28,19 +30,21 @@ const Search = () => {
 
   return (
     <div className="p-4 max-w-lg mx-auto">
-      <input
-        type="text"
-        placeholder="Search GitHub username..."
-        value={username}
-        onChange={(e) => setUsername(e.target.value)}
-        className="border p-2 w-full"
-      />
-      <button
-        onClick={fetchUserData}
-        className="bg-blue-500 text-white px-4 py-2 mt-2 w-full"
-      >
-        Search
-      </button>
+      <form onSubmit={fetchUserData} className="flex flex-col">
+        <input
+          type="text"
+          placeholder="Search GitHub username..."
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+          className="border p-2 w-full"
+        />
+        <button
+          type="submit"
+          className="bg-blue-500 text-white px-4 py-2 mt-2 w-full"
+        >
+          Search
+        </button>
+      </form>
 
       {loading && <p className="text-center mt-4">Loading...</p>}
       {error && <p className="text-center text-red-500 mt-4">{error}</p>}
