@@ -1,13 +1,13 @@
 import axios from "axios";
 
-const BASE_URL = "https://api.github.com/search/users?q"; // Corrected base URL
-const TOKEN = import.meta.env.VITE_GITHUB_ACCESS_TOKEN; // Load token from environment variables
-const headers = TOKEN ? { Authorization: `token ${TOKEN}` } : {}; // Use token only if provided
+const BASE_URL = "https://api.github.com"; // Correct base URL
+const TOKEN = import.meta.env.VITE_GITHUB_ACCESS_TOKEN; // Load token from .env file
+const headers = TOKEN ? { Authorization: `token ${TOKEN}` } : {}; // Include token if available
 
 /**
  * Fetch a single GitHub user by username.
  * @param {string} username - The GitHub username.
- * @returns {Promise<object|null>} - The GitHub user data.
+ * @returns {Promise<object|null>} - The GitHub user data or null if not found.
  */
 export const fetchUserData = async (username) => {
   try {
