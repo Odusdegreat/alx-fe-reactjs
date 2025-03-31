@@ -61,7 +61,7 @@ const Search = () => {
       {loading && <p>Loading...</p>}
 
       {/* Display Error Message */}
-      {error && <p> Looks like we cant find any user</p>}
+      {error && <p>Looks like we cant find the user</p>}
 
       {/* Display Multiple Users */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
